@@ -1,0 +1,26 @@
+from PyQt5.QtMultimediaWidgets import QCameraViewfinder
+{'code': 0, 'message': 'OK', 'data': {'session_id': '12572066431739776174', 'items': [
+{'itemcoord': {'x': 244, 'y': 226, 'width': 174, 'height': 29}, 'words': [{'character': '链', 'confidence': 0.9994346499443054}, {'character': '接', 'confidence': 0.9998915195465088}, {'character': ':', 'confidence': 0.8607236742973328}, {'character': '', 'confidence': 1.0}, {'character': 'h', 'confidence': 0.9998927116394044}, {'character': 't', 'confidence': 0.9995675683021544}, {'character': 't', 'confidence': 0.9972813129425048}, {'character': 'p', 'confidence': 0.9970507621765136}, {'character': 's', 'confidence': 0.641946017742157}, {'character': ':', 'confidence': 0.99833482503891}, {'character': '/', 'confidence': 0.9617403149604796}, {'character': '/', 'confidence': 0.9158957600593568}, {'character': 'p', 'confidence': 0.940358817577362}, {'character': '/', 'confidence': 0.908966302871704}], 'itemstring': '链接: https://p/'},
+{'itemcoord': {'x': 249, 'y': 281, 'width': 193, 'height': 28}, 'words': [{'character': '.', 'confidence': 0.8511658310890198}, {'character': 'b', 'confidence': 0.9998489618301392}, {'character': 'a', 'confidence': 0.9998346567153932}, {'character': 'i', 'confidence': 0.9984188079833984}, {'character': 'd', 'confidence': 0.999700665473938}, {'character': 'u', 'confidence': 0.9996547698974608}, {'character': '.', 'confidence': 0.9973899722099304}, {'character': 'c', 'confidence': 0.9999455213546752}, {'character': 'o', 'confidence': 0.9998739957809448}, {'character': 'm', 'confidence': 0.9633340835571288}, {'character': '/', 'confidence': 0.991241455078125}, {'character': 's', 'confidence': 0.995460569858551}, {'character': '/', 'confidence': 0.997139811515808}, {'character': '1', 'confidence': 0.9467572569847108}, {'character': 'a', 'confidence': 0.9995934367179872}, {'character': 'F', 'confidence': 0.9988040924072266}, {'character': '5', 'confidence': 0.998491644859314}], 'itemstring': '.baidu.com/s/1aF5'},
+{'itemcoord': {'x': 261, 'y': 341, 'width': 253, 'height': 23}, 'words': [{'character': '!', 'confidence': 0.31683585047721863}, {'character': 'D', 'confidence': 0.9982659220695496}, {'character': 'b', 'confidence': 0.9991162419319152}, {'character': 'z', 'confidence': 0.9952474236488342}, {'character': '3', 'confidence': 0.9994741082191468}, {'character': 'R', 'confidence': 0.9997685551643372}, {'character': 'v', 'confidence': 0.994574785232544}, {'character': 'R', 'confidence': 0.9998273849487304}, {'character': 'j', 'confidence': 0.9981449842453004}, {'character': 'S', 'confidence': 0.9982313513755798}, {'character': 'L', 'confidence': 0.9987647533416748}, {'character': 'w', 'confidence': 0.6087162494659424}, {'character': '7', 'confidence': 0.9992496371269226}, {'character': 'a', 'confidence': 0.9988836646080016}, {'character': 'L', 'confidence': 0.9954023361206056}, {'character': 'i', 'confidence': 0.9923895001411438}, {'character': 'U', 'confidence': 0.9937746524810792}, {'character': 'w', 'confidence': 0.88173508644104}], 'itemstring': '!Dbz3RvRjSLw7aLiUw'},
+{'itemcoord': {'x': 249, 'y': 395, 'width': 116, 'height': 29}, 'words': [{'character': '密', 'confidence': 0.9990591406822203}, {'character': '码', 'confidence': 0.999648928642273}, {'character': ':', 'confidence': 0.9187453389167786}, {'character': '', 'confidence': 1.0}, {'character': 'b', 'confidence': 0.99958473443985}, {'character': 'w', 'confidence': 0.9984862804412842}, {'character': 'q', 'confidence': 0.9955501556396484}, {'character': '9', 'confidence': 0.9970345497131348}], 'itemstring': '密码: bwq9'}
+]}, 'httpcode': 200}
+
+
+{'itemcoord': {'x': 228, 'y': 207, 'width': 204, 'height': 26}, 'words': [{'character': '链', 'confidence': 0.9989665746688844}, {'character': '接', 'confidence': 0.9998494386672974}, {'character': ':', 'confidence': 0.9740760922431946}, {'character': '', 'confidence': 1.0}, {'character': 'h', 'confidence': 0.9999115467071532}, {'character': 't', 'confidence': 0.9997368454933168}, {'character': 't', 'confidence': 0.9999439716339112}, {'character': 'p', 'confidence': 0.999837040901184}, {'character': 's', 'confidence': 0.998417854309082}, {'character': ':', 'confidence': 0.999502182006836}, {'character': '/', 'confidence': 0.9986728429794312}, {'character': '/', 'confidence': 0.9990851879119872}, {'character': 'p', 'confidence': 0.9997064471244812}, {'character': 'a', 'confidence': 0.9991521835327148}, {'character': 'n', 'confidence': 0.991357445716858}], 'itemstring': '链接: https://pan'}
+
+
+htps://yz:m.sm.cn/s?9=%E6%98%93%E6%80%9D%E7%BB%B4%28%E5%A4%A9%E6%B4%A5%29%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8&from=wy839078
+
+https://pan.baidu.com/s/1a_FIHJWwO1GxgeAJibMUVA
+https://pan.baidu.com/s/1a_FIHJWwO1GxgeAJibMUVA
+https://pan.baidu.com/s/1a_FlHJWwO1GxgeAJibMUVA
+
+布局：
+实现自动截取×
+实现设置
+实现其他识别
+对识别结果进行处理，正则化等
+
+
+'code': -9003, 'message': 'GLOCR_RECONG_FAILED'  -----   印刷体识别失败

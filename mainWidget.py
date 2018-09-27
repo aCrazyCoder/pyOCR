@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'test.ui'
+# Form implementation generated from reading ui file 'mainWidget.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -10,20 +10,18 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(965, 547)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(-10, 0, 976, 548))
-        self.layoutWidget.setObjectName("layoutWidget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+class Ui_mainWidget(object):
+    def setupUi(self, mainWidget):
+        mainWidget.setObjectName("mainWidget")
+        mainWidget.resize(972, 548)
+        self.gridLayout = QtWidgets.QGridLayout(mainWidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setSpacing(0)
+        self.gridLayout.setObjectName("gridLayout")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.frame = QtWidgets.QFrame(self.layoutWidget)
+        self.frame = QtWidgets.QFrame(mainWidget)
         self.frame.setMinimumSize(QtCore.QSize(0, 60))
         self.frame.setMaximumSize(QtCore.QSize(976, 16777215))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -88,7 +86,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.cameraShow = QCameraViewfinder(self.layoutWidget)
+        self.cameraShow = QCameraViewfinder(mainWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -104,7 +102,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(-1, -1, -1, 0)
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.caputurePhoto = QtWidgets.QLabel(self.layoutWidget)
+        self.caputurePhoto = QtWidgets.QLabel(mainWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -115,7 +113,7 @@ class Ui_MainWindow(object):
         self.caputurePhoto.setText("")
         self.caputurePhoto.setObjectName("caputurePhoto")
         self.verticalLayout.addWidget(self.caputurePhoto)
-        self.ocrInfo = QtWidgets.QTextEdit(self.layoutWidget)
+        self.ocrInfo = QtWidgets.QTextEdit(mainWidget)
         self.ocrInfo.setMinimumSize(QtCore.QSize(320, 170))
         self.ocrInfo.setMaximumSize(QtCore.QSize(320, 170))
         self.ocrInfo.setReadOnly(True)
@@ -125,26 +123,24 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setContentsMargins(10, -1, 10, -1)
         self.horizontalLayout_5.setSpacing(15)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.captureBtn = QtWidgets.QPushButton(self.layoutWidget)
+        self.captureBtn = QtWidgets.QPushButton(mainWidget)
         self.captureBtn.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.captureBtn.setObjectName("captureBtn")
         self.horizontalLayout_5.addWidget(self.captureBtn)
-        self.checkBox_cam = QtWidgets.QCheckBox(self.layoutWidget)
+        self.checkBox_cam = QtWidgets.QCheckBox(mainWidget)
         self.checkBox_cam.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.checkBox_cam.setObjectName("checkBox_cam")
         self.horizontalLayout_5.addWidget(self.checkBox_cam)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
-        self.layoutWidget.raise_()
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(mainWidget)
+        QtCore.QMetaObject.connectSlotsByName(mainWidget)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, mainWidget):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.captureBtn.setText(_translate("MainWindow", "open"))
-        self.checkBox_cam.setText(_translate("MainWindow", "camera"))
-
+        mainWidget.setWindowTitle(_translate("mainWidget", "Form"))
+        self.captureBtn.setText(_translate("mainWidget", "open"))
+        self.checkBox_cam.setText(_translate("mainWidget", "camera"))

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# The behavior of the mainwindow
+# The main function
 
-
-from test import Ui_MainWindow
 from login import Ui_Form
 from ocr import ocr
 import threading
@@ -14,16 +12,15 @@ from PyQt5.QtMultimedia import QCamera, QCameraImageCapture, QCameraInfo, QCamer
 from PyQt5.QtWidgets import qApp, QMessageBox, QSystemTrayIcon, QWidget, QFileDialog
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QSize, pyqtSignal
+from mainWidget import Ui_mainWidget
 
 
-class Implement(QWidget):
-    """
-    定义函数实现
-    """
+class mainInterface(QWidget):
+
     # 定义信号
     processFinished = pyqtSignal(dict)
 
-    def __init__(self, w):
+    def __init__(self):
         """
         初始化
         :return: null
@@ -31,18 +28,26 @@ class Implement(QWidget):
         # 超类初始化
         super().__init__()
 
-        # ui部分
-        self.mainwindow = w
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self.mainwindow)
+        # UI初始化
+        self.ui = Ui_mainWidget()
+        self.ui.setupUi(self)
+        self.grabKeyboard()
+        self.setMouseTracking(True)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        # 初始化相机
         self.camera = QCamera()
         self.imageCapture = QCameraImageCapture(self.camera)
         self.viewsetting = QCameraViewfinderSettings()
+        self.initimplement()
+
+        # 初始化标题栏
         self.initTitleBar()
+
+        # 初始化系统托盘
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(QIcon('OCR.ico'))
         self.initTray()
-        self.initimplement()
 
         # OCR识别部分
         self.OCR = ocr()
@@ -50,22 +55,23 @@ class Implement(QWidget):
         self.OCR.setsecretid('AKIDFTddWEg9Ncsz0sE7oOpBNOExdDdeCUJ3')
         self.OCR.setsecretkey('FQitsgUND8yfrZK0RrBMOJB5tWhCm5Ol')
 
-        # 登录部分
+        # 初始化登录部分
         self.logWidget = QWidget()
         self.logui = Ui_Form()
         self.logui.setupUi(self.logWidget)
         self.logWidget.setWindowFlags(Qt.FramelessWindowHint)
         self.logWidget.setWindowModality(Qt.ApplicationModal)
         self.logui.close_btn.clicked.connect(self.logWidget.close)
-        self.logui.close_btn.clicked.connect(self.grabKeyboard)
 
-        # 自变量
+        # 初始化变量
+        self.mousePressd = False
+        self.mousePoint = None
         self.result = {}
         self.isFirst = False
-        self.grabKeyboard()
+
+        # 初始化字定义信号连接
         self.processFinished.connect(self.updateOCRInfo)
         self.ui.btn_login.clicked.connect(self.logWidget.show)
-        self.ui.btn_login.clicked.connect(self.releaseKeyboard)
 
     def initTitleBar(self):
         """
@@ -129,7 +135,7 @@ class Implement(QWidget):
         """
         camInfo = QCameraInfo(self.camera)
         if camInfo.defaultCamera().isNull():
-            QMessageBox.warning(self.mainwindow, 'Warning', 'No available camera!', QMessageBox.Ok)
+            QMessageBox.warning(self, 'Warning', 'No available camera!', QMessageBox.Ok)
             return -1
         else:
             self.ui.caputurePhoto.setText(camInfo.description())
@@ -198,7 +204,7 @@ class Implement(QWidget):
     #     pix = QPixmap(self.ui.caputurePhoto.pixmap())
     #     if pix:
     #         pix.save(r'D://1.png', 'PNG')
-    #         QMessageBox.information(self.mainwindow, 'Message', 'Capture Successfully', QMessageBox.Ok)
+    #         QMessageBox.information(self, 'Message', 'Capture Successfully', QMessageBox.Ok)
 
     def ocrForImage(self, image):
         """
@@ -254,12 +260,12 @@ class Implement(QWidget):
             self.tray.show()
         if self.tray.isVisible():
             if self.isFirst is False:
-                QMessageBox.information(self.mainwindow, "Systray", "The program will keep running in the "
+                QMessageBox.information(self, "Systray", "The program will keep running in the "
                                                                     "system tray. To terminate the program, "
                                                                     "choose <b>Quit</b> in the context menu "
                                                                     "of the system tray entry.")
                 self.isFirst = True
-            self.mainwindow.hide()
+            self.hide()
 
     def trayActivatedEvent(self, reason):
         """
@@ -272,7 +278,17 @@ class Implement(QWidget):
             pass
         else:
             self.tray.hide()
-            self.mainwindow.show()
+            self.show()
+
+    def openDlg(self):
+        """
+        槽函数
+        打开对话框选取文件
+        :return:文件名
+        """
+        filename, filetype = QFileDialog.getOpenFileName(self, '选取图片', path.expanduser('~'), "Image Files (*.png *.jpg *.bmp)")
+        if filename:
+            self.displayimage(0, QImage(filename))
 
     def keyPressEvent(self, e):
         """
@@ -287,12 +303,36 @@ class Implement(QWidget):
                 self.imageCapture.capture()
                 self.camera.unlock()
 
-    def openDlg(self):
+    def mouseMoveEvent(self, e):
         """
         槽函数
-        打开对话框选取文件
-        :return:文件名
+        定义鼠标移动事件
+        :param e: QMouseEvent
+        :return: null
         """
-        filename, filetype = QFileDialog.getOpenFileName(self.mainwindow, '选取图片', path.expanduser('~'), "Image Files (*.png *.jpg *.bmp)")
-        self.displayimage(0, QImage(filename))
+        if (e.buttons() == Qt.LeftButton) and self.mousePressd:
+            self.move(e.globalPos() - self.mousePoint)
+            e.accept()
+
+    def mousePressEvent(self, e):
+        """
+        槽函数
+        定义鼠标按下事件
+        :param e: QMouseEvent
+        :return: null
+        """
+        if e.button() == Qt.LeftButton:
+            self.mousePressd = True
+            self.mousePoint = e.globalPos() - self.pos()
+            e.accept()
+
+    def mouseReleaseEvent(self, e):
+        """
+        槽函数
+        定义鼠标松开事件
+        :param e: QMouseEvent
+        :return: null
+        """
+        self.mousePressd = False
+
 

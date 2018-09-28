@@ -11,8 +11,11 @@ from API import CIBuffers, CIUrls, CIFiles
 from PyQt5.QtMultimedia import QCamera, QCameraImageCapture, QCameraInfo, QCameraViewfinderSettings
 from PyQt5.QtWidgets import qApp, QMessageBox, QSystemTrayIcon, QWidget, QFileDialog
 from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QSize, pyqtSignal
+from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QSize, pyqtSignal, QFile
 from mainWidget import Ui_mainWidget
+from enum import Enum
+
+ocrType = Enum('ocrType', ('ocr_general', 'ocr_handwriting', 'ocr_idcard', 'ocr_namecard', 'ocr_bankcard'))
 
 
 class mainInterface(QWidget):
@@ -34,6 +37,7 @@ class mainInterface(QWidget):
         self.grabKeyboard()
         self.setMouseTracking(True)
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowIcon(QIcon('OCR.ico'))
 
         # 初始化相机
         self.camera = QCamera()
@@ -68,10 +72,12 @@ class mainInterface(QWidget):
         self.mousePoint = None
         self.result = {}
         self.isFirst = False
+        self.ocrType = ocrType.ocr_general  # 默认为印刷体识别
 
         # 初始化字定义信号连接
         self.processFinished.connect(self.updateOCRInfo)
         self.ui.btn_login.clicked.connect(self.logWidget.show)
+        self.ui.comboBox_choose.currentIndexChanged.connect(self.changeocrType)
 
     def initTitleBar(self):
         """
@@ -91,7 +97,8 @@ class mainInterface(QWidget):
         self.ui.comboBox_choose.insertItem(0, '       印刷体识别')
         self.ui.comboBox_choose.insertItem(1, '       手写体识别')
         self.ui.comboBox_choose.insertItem(2, '       身份证识别')
-        self.ui.comboBox_choose.insertItem(3, '       银行卡识别')
+        self.ui.comboBox_choose.insertItem(3, '       名片识别')
+        self.ui.comboBox_choose.insertItem(4, '       银行卡识别')
         self.ui.btn_login.setStyleSheet("QPushButton{border-image:url(./image/default-portrait.png);}")
         self.ui.btn_setting.setStyleSheet("QPushButton{border-image:url(./image/settings.png);}"
                                           "QPushButton:hover{border-image:url(./image/qcconfig-hover.png);}")
@@ -218,7 +225,18 @@ class mainInterface(QWidget):
         buffer = QBuffer(byte)
         buffer.open(QIODevice.WriteOnly)
         image.save(buffer, 'PNG')
-        self.result = self.OCR.client.general_detect(CIBuffers([byte.data()]))
+        if self.ocrType == ocrType.ocr_general:
+            self.result = self.OCR.client.general_detect(CIBuffers([byte.data()]))
+        elif self.ocrType == ocrType.ocr_handwriting:
+            self.result = self.OCR.client.handwriting_detect(CIBuffers([byte.data()]))
+        elif self.ocrType == ocrType.ocr_idcard:
+            self.result = self.OCR.client.idcard_detect(CIBuffers([byte.data()]), 0)
+        elif self.ocrType == ocrType.ocr_namecard:
+            self.result = self.OCR.client.namecard_detect(CIBuffers([byte.data()]), 0)
+        elif self.ocrType == ocrType.ocr_bankcard:
+            self.result = self.OCR.client.bankcard_detect(CIBuffers([byte.data()]))
+        else:
+            pass
         self.processFinished.emit(self.result)
 
     def updateOCRInfo(self, res):
@@ -227,14 +245,55 @@ class mainInterface(QWidget):
         :param res:
         :return:
         """
-        if res['code'] == 0 and res['message'] == 'OK':
-            self.ui.ocrInfo.setText('OK')
-            ocrInfo = []
-            for i in range(len(self.result['data']['items'])):
-                ocrInfo.append(self.result['data']['items'][i]['itemstring'])
-            self.ui.ocrInfo.setText(''.join(ocrInfo))
+        if self.ocrType == ocrType.ocr_general or self.ocrType == ocrType.ocr_handwriting:
+            if res['code'] == 0 and res['message'] == 'OK':
+                self.ui.ocrInfo.setText('OK')
+                ocrInfo = []
+                for i in range(len(self.result['data']['items'])):
+                    ocrInfo.append(self.result['data']['items'][i]['itemstring'])
+                self.ui.ocrInfo.setText(''.join(ocrInfo))
+            else:
+                self.ui.ocrInfo.setText('识别失败！')
+        elif self.ocrType == ocrType.ocr_bankcard:
+            if res['code'] == 0 and res['message'] == 'OK':
+                self.ui.ocrInfo.setText('OK')
+                ocrInfo = []
+                for i in range(len(self.result['data']['items'])):
+                    ocrInfo.append(self.result['data']['items'][i]['item'])
+                    ocrInfo.append(':')
+                    ocrInfo.append(self.result['data']['items'][i]['itemstring'])
+                    ocrInfo.append('\n')
+                self.ui.ocrInfo.setText(''.join(ocrInfo))
+            else:
+                self.ui.ocrInfo.setText('识别失败！')
+        elif self.ocrType == ocrType.ocr_idcard:
+            if res['result_list'][0]['code'] == 0 and res['result_list'][0]['message'] == 'OK':
+                self.ui.ocrInfo.setText('OK')
+                ocrInfo = []
+                ocrInfo_keys = list(self.result['result_list'][0]['data'].keys())
+                ocrInfo_values = list(self.result['result_list'][0]['data'].values())
+                for i in range(len(self.result['result_list'][0]['data']) // 2):
+                    ocrInfo.append(ocrInfo_keys[i])
+                    ocrInfo.append(':')
+                    ocrInfo.append(ocrInfo_values[i])
+                    ocrInfo.append('\n')
+                self.ui.ocrInfo.setText(''.join(ocrInfo))
+            else:
+                self.ui.ocrInfo.setText('识别失败！')
+        elif self.ocrType == ocrType.ocr_namecard:
+            if res['result_list'][0]['code'] == 0 and res['result_list'][0]['message'] == 'OK':
+                self.ui.ocrInfo.setText('OK')
+                ocrInfo = []
+                for i in range(len(self.result['result_list'][0]['data'])):
+                    ocrInfo.append(self.result['result_list'][0]['data'][i]['item'])
+                    ocrInfo.append(':')
+                    ocrInfo.append(self.result['result_list'][0]['data'][i]['value'])
+                    ocrInfo.append('\n')
+                self.ui.ocrInfo.setText(''.join(ocrInfo))
+            else:
+                self.ui.ocrInfo.setText('识别失败！')
         else:
-            self.ui.ocrInfo.setText('识别失败！')
+            pass
 
     def camControl(self, state):
         """
@@ -288,7 +347,11 @@ class mainInterface(QWidget):
         """
         filename, filetype = QFileDialog.getOpenFileName(self, '选取图片', path.expanduser('~'), "Image Files (*.png *.jpg *.bmp)")
         if filename:
-            self.displayimage(0, QImage(filename))
+            if QFile(filename).size() >= 6291456:
+                QMessageBox.information(self, '打开图片', '选择图片大于6MB大小，暂不支持识别，请重新选择。')
+                self.openDlg()
+            else:
+                self.displayimage(0, QImage(filename))
 
     def keyPressEvent(self, e):
         """
@@ -335,4 +398,22 @@ class mainInterface(QWidget):
         """
         self.mousePressd = False
 
-
+    def changeocrType(self, index):
+        """
+        槽函数
+        改变ocr识别类型
+        :param index: int
+        :return: null
+        """
+        if index == 0:
+            self.ocrType = ocrType.ocr_general
+        elif index == 1:
+            self.ocrType = ocrType.ocr_handwriting
+        elif index == 2:
+            self.ocrType = ocrType.ocr_idcard
+        elif index == 3:
+            self.ocrType = ocrType.ocr_namecard
+        elif index == 4:
+            self.ocrType = ocrType.ocr_bankcard
+        else:
+            pass
